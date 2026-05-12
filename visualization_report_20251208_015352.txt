@@ -1,0 +1,26 @@
+
+Resume Scoring Accuracy Visualization Report
+==========================================
+
+Generated on: 2025-12-08 01:53:52
+
+Summary Statistics:
+- Average Accuracy: 88.33%
+- Total API Calls: 3
+- Average Processing Time: 6.71s
+
+Visualizations Generated:
+1. Accuracy Heatmaps: accuracy_heatmap_20251208_015349.png
+2. Difference Heatmap: difference_heatmap_20251208_015350.png
+3. Accuracy Bar Chart: accuracy_barchart_20251208_015351.png
+
+Detailed Results:
+
+Senior Python Developer:
+  Accuracy: 91.00%
+
+Entry Level Developer:
+  Accuracy: 78.00%
+
+Data Scientist with ML Expertise:
+  Accuracy: 96.00%

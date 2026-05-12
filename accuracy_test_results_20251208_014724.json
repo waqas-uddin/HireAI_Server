@@ -1,0 +1,73 @@
+{
+  "timestamp": "20251208_014724",
+  "test_resume_count": 3,
+  "average_accuracy": 88.33333333333333,
+  "total_api_calls": 3,
+  "average_processing_time": 6.714346011479695,
+  "total_test_time": 20.143038034439087,
+  "detailed_results": [
+    {
+      "resume_name": "Senior Python Developer",
+      "expected_scores": {
+        "total_score": 90,
+        "experience_score": 28,
+        "skills_score": 28,
+        "education_score": 19,
+        "projects_score": 9,
+        "communication_score": 6
+      },
+      "actual_scores": {
+        "total_score": 99,
+        "experience_score": 29,
+        "skills_score": 30,
+        "education_score": 20,
+        "projects_score": 10,
+        "communication_score": 10
+      },
+      "accuracy": 91.0,
+      "processing_time": 6.882810115814209
+    },
+    {
+      "resume_name": "Entry Level Developer",
+      "expected_scores": {
+        "total_score": 55,
+        "experience_score": 10,
+        "skills_score": 15,
+        "education_score": 15,
+        "projects_score": 7,
+        "communication_score": 8
+      },
+      "actual_scores": {
+        "total_score": 34,
+        "experience_score": 5,
+        "skills_score": 4,
+        "education_score": 15,
+        "projects_score": 1,
+        "communication_score": 9
+      },
+      "accuracy": 78.0,
+      "processing_time": 6.4989588260650635
+    },
+    {
+      "resume_name": "Data Scientist with ML Expertise",
+      "expected_scores": {
+        "total_score": 95,
+        "experience_score": 29,
+        "skills_score": 29,
+        "education_score": 20,
+        "projects_score": 10,
+        "communication_score": 7
+      },
+      "actual_scores": {
+        "total_score": 99,
+        "experience_score": 29,
+        "skills_score": 30,
+        "education_score": 20,
+        "projects_score": 10,
+        "communication_score": 10
+      },
+      "accuracy": 96.0,
+      "processing_time": 6.7612690925598145
+    }
+  ]
+}
