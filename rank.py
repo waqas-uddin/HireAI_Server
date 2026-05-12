@@ -2,8 +2,33 @@ import requests
 import json
 import config
 
-# Use a more stable and widely available model
-API_URL = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={config.GOOGLE_API_KEY}"
+# API URLs
+GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={config.GOOGLE_API_KEY}"
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+def call_groq(prompt):
+    """Utility to call Groq API with the given prompt"""
+    if not hasattr(config, 'GROQ_API_KEY') or not config.GROQ_API_KEY or "gsk_" not in config.GROQ_API_KEY:
+        raise ValueError("Groq API key not configured")
+
+    headers = {
+        "Authorization": f"Bearer {config.GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [
+            {"role": "system", "content": "You are a professional technical recruiter. You MUST respond with a valid JSON object only. Do not include markdown code blocks or conversational text."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.5,
+        "response_format": {"type": "json_object"}
+    }
+    
+    response = requests.post(GROQ_API_URL, headers=headers, json=payload, timeout=15)
+    response.raise_for_status()
+    data = response.json()
+    return data["choices"][0]["message"]["content"]
 
 def score_resume(job_description, resume_text):
     # Generate criteria breakdown from config
@@ -47,9 +72,19 @@ def score_resume(job_description, resume_text):
         "reasoning": "Fallback scores applied due to AI connection issues."
     }
     
-    # If the API key is not set or is the placeholder, return default scores
-    if not config.GOOGLE_API_KEY or config.GOOGLE_API_KEY == "YOUR_REAL_GEMINI_API_KEY_HERE":
-        print("Using default scores (no valid API key configured)")
+    # 1. Try Groq first (as requested)
+    try:
+        print("Attempting to score resume using Groq...")
+        groq_response = call_groq(prompt)
+        scores = json.loads(groq_response)
+        print(f"Groq Success: {scores}")
+        return scores
+    except Exception as e:
+        print(f"Groq failed, falling back to Gemini: {str(e)}")
+
+    # 2. Fallback to Gemini
+    if not config.GOOGLE_API_KEY or "AIza" not in config.GOOGLE_API_KEY:
+        print("Gemini API key not configured, returning default scores.")
         return default_scores
 
     payload = {
@@ -59,7 +94,8 @@ def score_resume(job_description, resume_text):
     }
 
     try:
-        response = requests.post(API_URL, json=payload, headers={"Content-Type": "application/json"})
+        print("Attempting to score resume using Gemini...")
+        response = requests.post(GEMINI_API_URL, json=payload, headers={"Content-Type": "application/json"}, timeout=15)
         
         if response.status_code == 200:
             response_json = response.json()
@@ -75,18 +111,16 @@ def score_resume(job_description, resume_text):
                 # Try to parse the JSON
                 try:
                     scores = json.loads(cleaned_json)
-                    print(f"API Response: {scores}")
+                    print(f"Gemini Success: {scores}")
                     return scores
                 except json.JSONDecodeError as je:
-                    print(f"Failed to parse API response as JSON: {je}")
-                    print(f"Raw API response: {cleaned_json}")
+                    print(f"Failed to parse Gemini response as JSON: {je}")
                     return default_scores
             else:
-                print("API returned unexpected response structure")
-                print(f"Response: {response_json}")
+                print("Gemini returned unexpected response structure")
                 return default_scores
         else:
-            print(f"API Error: {response.status_code} - {response.text}")
+            print(f"Gemini API Error: {response.status_code}")
             return default_scores
             
     except Exception as e:

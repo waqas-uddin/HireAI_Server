@@ -8,3 +8,4 @@ pandas
 flask
 python-docx
 werkzeug
+python-dotenv
